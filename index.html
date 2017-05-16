@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<meta name="viewport" content="width=device-width, user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="css/main.css"/>
+		<script src="js/zepto.js"></script>
+		<style>
+			.page {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				font-size: 200px;
+			}
+			.page-list {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+			}
+			.page1 {
+				background: red;
+			}
+			.page2 {
+				background: green;
+			}
+			.page3 {
+				background: blue;
+			}
+			.page4 {
+				background: yellow;
+			}
+			.current-page {
+				z-index: 10;
+			}
+		</style>
+	</head>
+	<body>
+		<section id="wrapper">
+			<div class="audio-wrapper">
+				<!--<audio loop="" src="http://res1.eqh5.com/a8304802-e0ea-48ce-90d5-328de5d3788b.mp3" id="media" autoplay="" preload="auto"></audio>-->
+			</div>
+			<section class="page-list">
+				<div class="page page1 current-page">1</div>
+				<div class="page page2">2</div>
+				<div class="page page3">3</div>
+				<div class="page page4">4</div>
+			</section>
+			<script src="js/ztween.js"></script>
+			<script src="js/main.js"></script>
+		</div>
+	</body>
+</html>
