@@ -14,7 +14,7 @@ class Drag {
 		this.viewHeight = window.innerHeight
 		this.viewWidth = window.innerWidth
 		
-		this.moveFlag = false
+		this.isSwiping = false
 		
 		this._init()
 	}
@@ -22,7 +22,6 @@ class Drag {
 	_init () {
 		this._initBox()
 		this._initEvent()
-		
 	}
 	
 	//初始化上下两个移动块
@@ -52,22 +51,50 @@ class Drag {
 		this.wrapper.on('touchend', this._endFn.bind(this))
 	}
 	_startFn (ev) {
+		if(this.isSwiping){
+			return
+		}
 		this.startY = ev.changedTouches[0].clientY
 	}
 	_moveFn (ev) {
+		if(this.isSwiping){
+			return
+		}
+		
 		var currentY = ev.changedTouches[0].clientY
 		this.disY = currentY - this.startY
+		
+		this._dealMoveFn()
+	}
+	_dealMoveFn () {
 		if (this.disY > 0) {
+			if(css(this.nextPage[0], 'translateY') !== 0){ //有可能prevPage滑动时nextPage没有回到0的位置，校正
+				css(this.nextPage[0], 'translateY', 0)
+			}
+			
 			css(this.prevPage[0], 'translateY', this.disY)
 			this.layer = this.prevPage
 		} else {
+			if(css(this.prevPage[0], 'translateY') !== 0){
+				css(this.prevPage[0], 'translateY', 0)
+			}
 			css(this.nextPage[0], 'translateY', this.disY)
 			this.layer = this.nextPage
 		}
+		
+		
 	}
 	_endFn (ev) {
-		
+		if(this.isSwiping){
+			return
+		}
+		if(this.disY === 0) {
+			return
+		}
 		this.target = null
+		this._dealEnd()
+	}
+	_dealEnd () {
 		if (this.disY > 0) {
 			this.layer = this.prevPage
 			this.target = this.viewHeight
@@ -76,12 +103,10 @@ class Drag {
 			this.target = -this.viewHeight
 		}
 		
-		var bl = this._isOutRange(this.disY)
-		if(!bl){ // 如果在一定范围之内纵向移动，那么复归原位
+		if(!this._isOutRange(this.disY)){ // 如果在一定范围之内纵向移动，那么复归原位
 			this.target = 0 
-			this.moveFlag = false
 		}else {
-			this.moveFlag = true
+			this.layer.triggerHandler('slidein')
 		}
 		this._move()
 	}
@@ -92,25 +117,37 @@ class Drag {
 		return true
 	}
 	_move () {
+		this.isSwiping = true
+		var time = this._isOutRange(this.disY)? 300: 100
 		ZTween({
 			el: this.layer[0],
 			target: {
 				'translateY': this.target
 			},
-			time:300,
+			time,
 			type:'linear',
 			callBack: () => {
+				this.isSwiping = false
 				if (!this._isOutRange(this.disY)) {
 					return 
 				}
+				
 				// 状态复原
 				this.currentPage.removeClass('current-page')
 				css(this.layer[0], 'translateY', 0)
 				this.layer.addClass('current-page')
 				
+				this.disY = 0
+				
 				this._initBox()
 			}
-		})	
+		})
 	}
 }
 new Drag('.page-list')
+$(".page1").on('slidein', function () {
+	console.log(1)
+})
+$(".page2").on('slidein', function () {
+	console.log(2)
+})

@@ -38,6 +38,11 @@
 				z-index: 10;
 			}
 		</style>
+		<script>
+			document.addEventListener('touchstart', (ev) => {
+				ev.preventDefault()
+			})
+		</script>
 	</head>
 	<body>
 		<section id="wrapper">
@@ -52,6 +57,6 @@
 			</section>
 			<script src="js/ztween.js"></script>
 			<script src="js/main.js"></script>
-		</div>
+		</section>
 	</body>
 </html>
